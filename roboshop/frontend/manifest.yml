@@ -105,15 +105,15 @@ spec:
         readinessProbe:
           httpGet:
             path: /
-            port: liveness-port
-          failureThreshold: 15
+            port: 8080
+          failureThreshold: 6
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /
-            port: liveness-port
-          failureThreshold: 15
-          periodSeconds: 5
+            port: 8080
+          failureThreshold: 5
+          periodSeconds: 10
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
