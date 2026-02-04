@@ -107,12 +107,14 @@ spec:
             path: /
             port: 8080
           failureThreshold: 6
+          initialDelaySeconds: 45
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /
             port: 8080
           failureThreshold: 5
+          initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
         - name: nginx-config
