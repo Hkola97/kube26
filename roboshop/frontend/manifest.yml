@@ -65,12 +65,12 @@ data:
             }
         }
     }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
   namespace: roboshop
-  # these are replica set labels
   labels:
     project: roboshop
     component: frontend
@@ -78,12 +78,10 @@ metadata:
 spec:
   replicas: 1
   selector:
-    # these labels are used to select pods
     matchLabels:
       project: roboshop
       component: frontend
       tier: frontend
-  # pod definition
   template:
     metadata:
       labels:
@@ -92,32 +90,32 @@ spec:
         tier: frontend
     spec:
       containers:
-      - name: frontend
-        image: joindevops/frontend:v1
-        imagePullPolicy: Always
-        ports:
-        - name: liveness-port
-          containerPort: 8080
-        readinessProbe:
-          httpGet:
-            path: /
-            port: liveness-port
-          failureThreshold: 1
-          periodSeconds: 15
-        livenessProbe:
-          httpGet:
-            path: /
-            port: liveness-port
-          failureThreshold: 1
-          periodSeconds: 15
-        volumeMounts:
-        - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
+        - name: frontend
+          image: joindevops/frontend:v1
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
       volumes:
-      - name: nginx-config
-        configMap:
-          name: frontend
+        - name: nginx-config
+          configMap:
+            name: frontend
 ---
 apiVersion: v1
 kind: Service
@@ -132,5 +130,5 @@ spec:
     tier: frontend
   ports:
     - protocol: TCP
-      port: 80 # service port
-      targetPort: 8080 # container port
+      port: 80
+      targetPort: 8080
